@@ -512,26 +512,32 @@ def compare_model_versions(model_name: str,
         comparison = {}
         
         for version in versions:
-            model_version = client.get_model_version(model_name, version)
-            run_id = model_version.run_id
-            
-            # Get run metrics
-            run = client.get_run(run_id)
-            version_metrics = run.data.metrics
-            
-            # Filter metrics if specified
-            if metrics:
-                version_metrics = {
-                    k: v for k, v in version_metrics.items() 
-                    if k in metrics
+            try:
+                model_version = client.get_model_version(model_name, version)
+                run_id = model_version.run_id
+                
+                # Get run metrics
+                run = client.get_run(run_id)
+                version_metrics = run.data.metrics
+                
+                # Filter metrics if specified
+                if metrics:
+                    version_metrics = {
+                        k: v for k, v in version_metrics.items() 
+                        if k in metrics
+                    }
+                
+                comparison[str(version)] = {
+                    'metrics': version_metrics,
+                    'stage': model_version.current_stage,
+                    'run_id': run_id,
+                    'creation_timestamp': model_version.creation_timestamp
                 }
-            
-            comparison[str(version)] = {
-                'metrics': version_metrics,
-                'stage': model_version.current_stage,
-                'run_id': run_id,
-                'creation_timestamp': model_version.creation_timestamp
-            }
+            except Exception as e:
+                logger.warning(f"Failed to get data for version {version}: {str(e)}")
+                comparison[str(version)] = {
+                    'error': str(e)
+                }
         
         logger.info(f"Compared {len(versions)} versions of {model_name}")
         

@@ -204,6 +204,7 @@ class ModelTrainer:
                     )
                     logger.info(f"Model registered as: {register_model_name}")
                 
+                # Set model reference after MLflow operations
                 self.model = model
                 mlflow.log_param('status', 'success')
                 

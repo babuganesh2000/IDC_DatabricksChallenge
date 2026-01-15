@@ -19,6 +19,8 @@ from pyspark.ml.evaluation import (
     RegressionEvaluator
 )
 
+from ..models.base_model import BaseModel
+
 # Hyperopt imports
 try:
     from hyperopt import fmin, tpe, hp, Trials, STATUS_OK, STATUS_FAIL, space_eval
@@ -26,10 +28,6 @@ try:
     HYPEROPT_AVAILABLE = True
 except ImportError:
     HYPEROPT_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("Hyperopt not available. Install with: pip install hyperopt")
-
-from ..models.base_model import BaseModel
 from ..models.churn_prediction import ChurnPredictionModel
 from ..models.clv_prediction import CLVPredictionModel
 from ..models.purchase_prediction import PurchasePredictionModel
