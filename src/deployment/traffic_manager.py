@@ -252,8 +252,11 @@ class TrafficManager:
 
                     # Wait before next step (except for last step)
                     if step_num < len(shift_steps):
+                        wait_seconds = step_duration_minutes * 60
                         logger.debug(f"Waiting {step_duration_minutes} minutes before next step")
-                        time.sleep(step_duration_minutes * 60)
+                        # Sleep in smaller increments to allow for interruption
+                        for _ in range(wait_seconds // 10):
+                            time.sleep(10)
 
                 shift_result["completed_at"] = datetime.utcnow().isoformat()
 

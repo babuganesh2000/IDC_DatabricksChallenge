@@ -78,8 +78,10 @@ class ServingEndpointManager:
                     state=existing.state.config_update if existing.state else "unknown",
                 )
                 return self._endpoint_to_dict(existing)
-            except Exception:
-                pass
+            except Exception as e:
+                # Endpoint doesn't exist, proceed with creation
+                if "does not exist" not in str(e).lower() and "not found" not in str(e).lower():
+                    logger.warning("Unexpected error checking endpoint existence", error=str(e))
 
             # Prepare served entity configuration
             served_entities = [

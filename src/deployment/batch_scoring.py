@@ -44,21 +44,27 @@ class BatchScoringPipeline:
             checkpoint_location=self.checkpoint_location,
         )
 
-    def load_model(self, model_uri: str) -> None:
+    def load_model(self, model_uri: str, result_type: Optional[Any] = None) -> None:
         """Load model from MLflow.
 
         Args:
             model_uri: URI to model (e.g., models:/model_name/Production or runs:/<run_id>/model)
+            result_type: Spark SQL DataType for model output (default: ArrayType(DoubleType()))
 
         Raises:
             Exception: If model loading fails
         """
         try:
             logger.info("Loading model for batch scoring", model_uri=model_uri)
+            
+            # Default to array of doubles for classification probabilities
+            if result_type is None:
+                result_type = ArrayType(DoubleType())
+            
             self.model = mlflow.pyfunc.spark_udf(
                 self.spark,
                 model_uri=model_uri,
-                result_type=ArrayType(DoubleType()),
+                result_type=result_type,
             )
             self.model_uri = model_uri
             logger.info("Model loaded successfully", model_uri=model_uri)

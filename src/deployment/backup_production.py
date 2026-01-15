@@ -41,7 +41,17 @@ class ProductionBackupManager:
         self.client = MlflowClient()
 
         # Ensure backup directory exists
-        Path(backup_base_path).mkdir(parents=True, exist_ok=True)
+        # Use native path operations for non-DBFS paths, dbutils for DBFS paths
+        if backup_base_path.startswith("/dbfs/"):
+            try:
+                from pyspark.dbutils import DBUtils
+                dbutils = DBUtils(self.spark)
+                dbutils.fs.mkdirs(backup_base_path.replace("/dbfs", "dbfs:"))
+            except Exception:
+                logger.warning("Could not create DBFS directory with dbutils, using Path")
+                Path(backup_base_path).mkdir(parents=True, exist_ok=True)
+        else:
+            Path(backup_base_path).mkdir(parents=True, exist_ok=True)
 
         logger.info("Initialized ProductionBackupManager", backup_path=backup_base_path)
 

@@ -193,13 +193,16 @@ class ModelPromoter:
                     if difference > 0:
                         comparison_results["improvements"][metric] = percent_change
 
-            # Overall recommendation
+            # Overall recommendation (configurable threshold)
             num_improvements = len(comparison_results["improvements"])
             num_metrics = len(comparison_results["metric_comparison"])
-
+            
+            # Default threshold: 60% of metrics should show improvement
+            improvement_threshold = 0.6
             comparison_results["recommendation"] = (
-                "promote" if num_improvements >= num_metrics * 0.6 else "reject"
+                "promote" if num_improvements >= num_metrics * improvement_threshold else "reject"
             )
+            comparison_results["improvement_threshold"] = improvement_threshold
 
             logger.info(
                 "Model comparison completed",
