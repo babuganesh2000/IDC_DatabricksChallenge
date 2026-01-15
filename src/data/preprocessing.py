@@ -63,6 +63,7 @@ class DataPreprocessor:
         )
 
         original_count = df.count()
+        duplicates_removed = 0
 
         # Drop duplicates if requested
         if drop_duplicates:

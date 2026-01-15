@@ -5,6 +5,7 @@ and generating data quality reports.
 """
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Union
 
@@ -512,7 +513,6 @@ class DataValidator:
             ).first()["latest"]
 
             # Calculate age
-            from datetime import datetime, timezone
             current_time = datetime.now(timezone.utc)
             
             if latest_timestamp:
