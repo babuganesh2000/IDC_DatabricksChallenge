@@ -125,7 +125,8 @@ def log_feature_importance(feature_importance: Dict[str, float],
                 
                 # Save plot
                 if plot_path is None:
-                    plot_path = tempfile.mktemp(suffix='.png')
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='.png', delete=False) as f:
+                        plot_path = f.name
                     should_remove = True
                 else:
                     should_remove = False
@@ -199,7 +200,8 @@ def log_confusion_matrix(y_true: Union[np.ndarray, List],
         
         # Save and log
         if plot_path is None:
-            plot_path = tempfile.mktemp(suffix='.png')
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.png', delete=False) as f:
+                plot_path = f.name
             should_remove = True
         else:
             should_remove = False
