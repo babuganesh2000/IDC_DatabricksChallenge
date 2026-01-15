@@ -160,3 +160,4 @@ temp/
 data/
 !config/*.json
 !infrastructure/**/*.json
+!src/data/
