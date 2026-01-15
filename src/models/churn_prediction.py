@@ -15,9 +15,16 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import VectorAssembler, StandardScaler
 from pyspark.ml.classification import RandomForestClassifier, GBTClassifier
 from pyspark.ml.evaluation import BinaryClassificationEvaluator, MulticlassClassificationEvaluator
-from imblearn.over_sampling import SMOTE
 import mlflow
 import mlflow.keras
+
+# Conditional import for SMOTE
+try:
+    from imblearn.over_sampling import SMOTE
+    SMOTE_AVAILABLE = True
+except ImportError:
+    SMOTE_AVAILABLE = False
+    SMOTE = None
 
 from .base_model import BaseModel
 
@@ -145,6 +152,12 @@ class ChurnPredictionModel(BaseModel):
         Returns:
             Balanced DataFrame
         """
+        if not SMOTE_AVAILABLE:
+            raise ImportError(
+                "SMOTE is not available. Install imbalanced-learn: "
+                "pip install imbalanced-learn"
+            )
+        
         try:
             logger.info("Applying SMOTE for class imbalance")
             
@@ -353,6 +366,11 @@ class ChurnPredictionModel(BaseModel):
         
         # Apply SMOTE if requested
         if self.use_smote:
+            if not SMOTE_AVAILABLE:
+                raise ImportError(
+                    "SMOTE is not available. Install imbalanced-learn: "
+                    "pip install imbalanced-learn"
+                )
             smote = SMOTE(random_state=42)
             X_train, y_train = smote.fit_resample(X_train, y_train)
         

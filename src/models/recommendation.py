@@ -8,7 +8,7 @@ for product recommendations with weighted interactions.
 from typing import Any, Dict, List, Optional, Tuple
 import logging
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, count, countDistinct, collect_list, size, array_distinct
+from pyspark.sql.functions import col, count, countDistinct, collect_list, size, array_distinct, sum as spark_sum
 from pyspark.ml.recommendation import ALS, ALSModel
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
@@ -91,7 +91,7 @@ class RecommendationModel(BaseModel):
             
             # Aggregate multiple interactions
             interactions = interactions.groupBy(self.user_col, self.item_col).agg(
-                (sum(col(self.rating_col)) / count("*")).alias(self.rating_col)
+                (spark_sum(col(self.rating_col)) / count("*")).alias(self.rating_col)
             )
             
             logger.info(f"Prepared {interactions.count()} user-item interactions")
