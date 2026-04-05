@@ -1,0 +1,114 @@
+{
+  "datasets": [
+    {
+      "name": "e41400ae",
+      "displayName": "Conversion Funnel",
+      "queryLines": [
+        "WITH category_events AS (\r\n",
+        "    SELECT\r\n",
+        "        category_code,\r\n",
+        "        SUM(CASE WHEN event_type = 'view' THEN 1 ELSE 0 END) AS views,\r\n",
+        "        SUM(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) AS purchases\r\n",
+        "    FROM silver.events\r\n",
+        "    GROUP BY category_code\r\n",
+        ")\r\n",
+        "SELECT\r\n",
+        "    category_code,\r\n",
+        "    views,\r\n",
+        "    purchases,\r\n",
+        "    ROUND(\r\n",
+        "        purchases * 100.0 / NULLIF(views, 0),\r\n",
+        "        2\r\n",
+        "    ) AS conversion_rate_percent\r\n",
+        "FROM category_events\r\n",
+        "ORDER BY conversion_rate_percent DESC;\r\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "f9b25547",
+      "displayName": "Category_Conversion_Funnel",
+      "layout": [
+        {
+          "widget": {
+            "name": "4f90cdbb",
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {}
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 6,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "conversion-rate-by-category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "e41400ae",
+                  "fields": [
+                    {
+                      "name": "category_code",
+                      "expression": "`category_code`"
+                    },
+                    {
+                      "name": "avg(conversion_rate_percent)",
+                      "expression": "AVG(`conversion_rate_percent`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "category_code",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(conversion_rate_percent)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Conversion Rate by Category",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

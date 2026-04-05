@@ -1,0 +1,97 @@
+{
+  "datasets": [
+    {
+      "name": "c9d31a50",
+      "displayName": "Revenue_Trend_7Day_MA",
+      "queryLines": [
+        "WITH daily_revenue AS (\r\n",
+        "    SELECT\r\n",
+        "        CAST(event_time AS DATE) AS event_date,\r\n",
+        "        SUM(price) AS revenue\r\n",
+        "    FROM silver.events\r\n",
+        "    WHERE event_type = 'purchase'\r\n",
+        "      AND price IS NOT NULL\r\n",
+        "    GROUP BY CAST(event_time AS DATE)\r\n",
+        ")\r\n",
+        "SELECT\r\n",
+        "    event_date,\r\n",
+        "    revenue,\r\n",
+        "    ROUND(\r\n",
+        "        AVG(revenue) OVER (\r\n",
+        "            ORDER BY event_date\r\n",
+        "            ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\r\n",
+        "        ), 2\r\n",
+        "    ) AS revenue_7day_moving_avg\r\n",
+        "FROM daily_revenue\r\n",
+        "ORDER BY event_date;\r\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "760fb8ac",
+      "displayName": "Revenue_Trend_7Day_MA",
+      "layout": [
+        {
+          "widget": {
+            "name": "7-day-moving-average-revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c9d31a50",
+                  "fields": [
+                    {
+                      "name": "daily(event_date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `event_date`)"
+                    },
+                    {
+                      "name": "avg(revenue_7day_moving_avg)",
+                      "expression": "AVG(`revenue_7day_moving_avg`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(event_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(revenue_7day_moving_avg)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "7-Day Moving Average Revenue",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

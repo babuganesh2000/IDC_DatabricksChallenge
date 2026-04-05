@@ -1,0 +1,86 @@
+{
+  "datasets": [
+    {
+      "name": "736a7bf1",
+      "displayName": "Top_Products_By_Revenue",
+      "queryLines": [
+        "SELECT\r\n",
+        "    product_id,\r\n",
+        "    category_code,\r\n",
+        "    SUM(price) AS total_revenue\r\n",
+        "FROM silver.events\r\n",
+        "WHERE event_type = 'purchase'\r\n",
+        "GROUP BY product_id, category_code\r\n",
+        "ORDER BY total_revenue DESC\r\n",
+        "LIMIT 10;\r\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "2130d2f1",
+      "displayName": "Top_Products_By_Revenue",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-revenue-by-product",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "736a7bf1",
+                  "fields": [
+                    {
+                      "name": "product_id",
+                      "expression": "`product_id`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_id",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Total Revenue by Product",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

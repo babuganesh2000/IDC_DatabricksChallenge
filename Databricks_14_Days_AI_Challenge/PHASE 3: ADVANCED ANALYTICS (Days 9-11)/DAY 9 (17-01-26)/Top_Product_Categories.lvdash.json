@@ -1,0 +1,182 @@
+{
+  "datasets": [
+    {
+      "name": "89308e35",
+      "displayName": "Top_Product_Categories",
+      "queryLines": [
+        "SELECT * FROM ecommerce.gold.top_products"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "9578c342",
+      "displayName": "Top_Product_Categories",
+      "layout": [
+        {
+          "widget": {
+            "name": "purchases-distribution",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "89308e35",
+                  "fields": [
+                    {
+                      "name": "sum(purchases)",
+                      "expression": "SUM(`purchases`)"
+                    },
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(purchases)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "brand",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "title": "Purchases Distribution",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 5,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue-distribution",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "89308e35",
+                  "fields": [
+                    {
+                      "name": "sum(revenue)",
+                      "expression": "SUM(`revenue`)"
+                    },
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(revenue)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "brand",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "title": "Revenue Distribution",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 7,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "a6eb5b67",
+            "queries": [
+              {
+                "name": "dashboards/01f0f39a9cda1b8bba77e17dfb337836/datasets/01f0f39ab0b0199a912a565323dc8ab1_brand",
+                "query": {
+                  "datasetName": "89308e35",
+                  "fields": [
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    },
+                    {
+                      "name": "brand_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "brand",
+                    "queryName": "dashboards/01f0f39a9cda1b8bba77e17dfb337836/datasets/01f0f39ab0b0199a912a565323dc8ab1_brand"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "showDescription": false
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
